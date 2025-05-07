@@ -11,7 +11,11 @@ Esta capacitación virtual se mostrará de manera sencilla los conceptos básico
 ### Introducción breve a Kubernetes
 ¿Qué es Kubernetes? Kubernetes (k8s) es una plataforma open source para la orquestación de contenedores, que automatiza la implementación, gestión y escalado de aplicaciones en contenedores.
 
-### Componentes
+
+## Arquitectura Kubernetes. 
+
+![Arquitectura Kubernetes](images/kubernetes-cluster-architecture.svg)
+
 
 ## 🧠 Componentes de Kubernetes
 
@@ -30,6 +34,14 @@ Esta capacitación virtual se mostrará de manera sencilla los conceptos básico
 | CRI (containerd/Docker)   | Nodo de trabajo | Ejecuta los contenedores; interfaz de ejecución compatible con Kubernetes.         |
 
 
-## Arquitectura Kubernetes. 
 
-![Arquitectura Kubernetes](images/kubernetes-cluster-architecture.svg)
+## 🔍 Observabilidad en Sistemas Distribuidos
+
+| Concepto        | Definición                                                                 |
+|-----------------|----------------------------------------------------------------------------|
+| **Observabilidad** | Capacidad de entender el estado interno de un sistema complejo a partir de su salida de datos. |
+| **¿Por qué es importante?** | Permite diagnosticar fallas, detectar cuellos de botella y mejorar la confiabilidad. Fundamental en entornos dinámicos como Kubernetes y microservicios. |
+| **Logs**         | Registros detallados de eventos que ocurren dentro del sistema. Útiles para auditoría y diagnóstico. |
+| **Métricas**     | Valores numéricos que representan el estado del sistema en el tiempo (CPU, memoria, latencia, etc.). |
+| **Trazas**       | Seguimiento de una petición a través de múltiples servicios. Permite ver tiempos y dependencias. |
+| **Ventaja frente al monitoreo** | Mientras el monitoreo alerta sobre fallos, la observabilidad permite investigar la causa raíz con datos más ricos. |
