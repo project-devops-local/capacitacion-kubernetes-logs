@@ -13,63 +13,22 @@ Esta capacitación virtual se mostrará de manera sencilla los conceptos básico
 
 ### Componentes
 
-**control plane:** Es el cerebro de Kubernetes. Aquí se toman todas las decisiones: qué ejecutar, dónde y cómo reaccionar si algo falla.
+## 🧠 Componentes de Kubernetes
 
-#### Componentes dentro del Control Plane:
-**API Server (kube-api-server)**
+| Componente                  | Tipo            | Descripción breve                                                                 |
+|----------------------------|-----------------|------------------------------------------------------------------------------------|
+| **Control Plane**          | Cerebro         | Decide qué ejecutar, dónde y cómo reaccionar si algo falla.                       |
+| kube-api-server            | Control Plane   | Puerta de entrada a Kubernetes; recibe peticiones y las comunica al sistema.      |
+| etcd                       | Control Plane   | Base de datos distribuida que guarda el estado y configuración del clúster.       |
+| kube-scheduler             | Control Plane   | Asigna Pods a los nodos según disponibilidad de recursos.                         |
+| kube-controller-manager    | Control Plane   | Garantiza que el estado deseado se cumpla (ej. mantener 3 Pods activos).          |
+| cloud-controller-manager   | Control Plane   | Integra Kubernetes con servicios del proveedor cloud (balanceadores, discos).     |
+| **Worker Nodes**           | Ejecutores      | Máquinas donde realmente corren los contenedores (aplicaciones).                  |
+| kubelet                   | Nodo de trabajo | Agente que ejecuta instrucciones del control plane en el nodo correspondiente.    |
+| kube-proxy                | Nodo de trabajo | Maneja la red y permite la comunicación entre Pods y con el exterior.             |
+| Pod                       | Nodo de trabajo | Unidad mínima de ejecución; puede contener uno o más contenedores.               |
+| CRI (containerd/Docker)   | Nodo de trabajo | Ejecuta los contenedores; interfaz de ejecución compatible con Kubernetes.         |
 
-* Es la puerta de entrada a Kubernetes. Todo pasa por aquí, como los pedidos que haces en un restaurante.
-
-* Si tú o alguna herramienta quiere crear una app, escalarla o ver su estado, lo hace a través del API Server.
-
-**etcd**
-
-* Es como una libreta de apuntes, donde Kubernetes guarda todo: configuraciones, estado del sistema, qué apps están corriendo, etc.
-
-* Es una base de datos muy rápida y confiable.
-
-**Scheduler (kube-scheduler)**
-
-* Decide en qué servidor (nodo) se va a ejecutar una aplicación.
-
-* Por ejemplo: "Tengo que lanzar esta app, ¿en qué máquina hay más espacio?"
-
-
-**Controller Manager (kube-controller-manager)**
-
-* Se asegura de que lo que pediste realmente esté pasando.
-
-* Si pediste 3 copias de una app (3 pods) y solo hay 2, este componente creará la tercera.
-
-**Cloud Controller Manager**
-
-* Se conecta con proveedores de nube (como AWS, GCP, Azure).
-
-* Si estás en la nube, este se encarga de integrar con servicios como balanceadores de carga o almacenamiento externo.
-
-
-
-### Nodos de Trabajo (Worker Nodes):
-
-**kubelet**
-
-* Es un pequeño agente que recibe órdenes del Control Plane y se asegura de que los contenedores estén funcionando correctamente.
-
-* Si el Control Plane le dice: "Corre esta app", el kubelet lo hace.
-
-**kube-proxy**
-
-* Es el que maneja la red.
-
-* Se asegura de que las aplicaciones puedan comunicarse entre sí y con el mundo exterior.
-
-**Pods**
-
-* Es la unidad más pequeña de ejecución en Kubernetes.
-
-* Un Pod puede contener uno o varios contenedores (aplicaciones).
-
-* CRI (Container Runtime Interface): No se ve claramente explicado, pero es lo que ejecuta los contenedores, como Docker o containerd.
 
 ## Arquitectura Kubernetes. 
 
