@@ -5,7 +5,7 @@ apiVersion: kind.x-k8s.io/v1alpha4
 # ①  Desactiva el CNI por defecto, así luego instalamos Calico
 networking:
   disableDefaultCNI: true        # ← imprescindible para NetworkPolicy
-
+name: demo-kind
 nodes:
 # — control‑plane —
 - role: control-plane
