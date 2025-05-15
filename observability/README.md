@@ -30,7 +30,7 @@ La **observabilidad** es la capacidad de entender el estado interno de un sistem
 
 ## 2. Arquitectura básica de Kubernetes
 
-![Arquitectura Kubernetes](images/kubernetes-cluster-architecture.svg)
+![Arquitectura Kubernetes](../images/kubernetes-cluster-architecture.svg)
 
 ### Componentes clave
 
