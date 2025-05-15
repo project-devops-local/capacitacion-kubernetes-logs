@@ -32,13 +32,23 @@ kind create cluster --config kind-config.yaml --name demo
 ```
 Ejemplo mínimo de **kind-config.yaml** (control‑plane + 2 workers):
 ```yaml
+# kind-calico.yaml  – clúster Kind “listo para Calico” con puerto 30000 abierto
 kind: Cluster
 apiVersion: kind.x-k8s.io/v1alpha4
-name: demo
+
+# ①  Desactiva el CNI por defecto, así luego instalamos Calico
+networking:
+  disableDefaultCNI: true        # ← imprescindible para NetworkPolicy
+name: demo-kind
 nodes:
-  - role: control-plane
-  - role: worker
-  - role: worker
+# — control‑plane —
+- role: control-plane
+  extraPortMappings:
+    - containerPort: 30000
+      hostPort: 30000
+      protocol: TCP
+# — worker (puedes añadir más bloques iguales) —
+- role: worker
 ```
 
 Valida que el clúster esté activo:
