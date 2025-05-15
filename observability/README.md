@@ -49,25 +49,13 @@ La **observabilidad** es la capacidad de entender el estado interno de un sistem
 
 ---
 
-## 3. Entorno local con Minikube
 
 ### 3.1 Prerrequisitos
 
 * Docker Desktop instalado
-* Minikube (última versión)
+* Minikube,kind (última versión)
 * Helm 3
 
-### 3.2 Instalación y arranque
-
-```bash
-# Inicia Minikube con driver Docker
-minikube start --driver=docker
-
-# Verifica nodos
-kubectl get nodes
-```
-
----
 
 ## 4. Despliegue del stack de logs (Loki + Promtail + Grafana)
 
@@ -183,7 +171,6 @@ span.End()
 * **Alertas** en Prometheus para picos de errores o latencias.
 * **Correlación** logs ↔ métricas ↔ trazas mediante `trace_id`.
 
-¡Gracias por tu atención! Cualquier duda, preguntas al chat.
 
 
 ## 🔟 Instalación de Prometheus para recopilar métricas del clúster Kubernetes
@@ -206,7 +193,7 @@ node_memory_MemTotal_bytes{job="kubernetes-service-endpoints", node="minikube"} 
 #memoria disponible
 node_memory_MemAvailable_bytes{job="kubernetes-service-endpoints", node="minikube"} / (1024 * 1024 * 1024)
 
-#cpu disponible del nodo minikube
+#cpu disponible del nodo kind
 avg by (instance) (
   rate(node_cpu_seconds_total{mode="idle", node="minikube"}[5m])
 ) * 100
@@ -234,7 +221,7 @@ node_memory_MemTotal_bytes{job="kubernetes-service-endpoints", node="minikube"} 
 
 ### 🔍 Filtros
 - `job="kubernetes-service-endpoints"`: Solo considera métricas del servicio de endpoints de Kubernetes.
-- `node="minikube"`: Filtra por el nodo llamado **minikube**.
+- `node=",kind"`: Filtra por el nodo llamado **kind**.
 
 ### 🔁 Conversión
 - Se divide el valor por **1024³** para convertir de **bytes a gigabytes (GB)**.
@@ -287,38 +274,7 @@ node_memory_MemAvailable_bytes{job="kubernetes-service-endpoints", node="minikub
 agregar en la url esto y guardar
 http://my-prometheus-server
 
-![Grafana datasource](images/grafana.jpg)
+![Grafana datasource](../images/grafana.jpg)
 
 
 
-## Control de Acceso Basado en Roles (RBAC) en Kubernetes
-
-Kubernetes RBAC (Role-Based Access Control) permite regular las operaciones que los usuarios (o grupos) pueden realizar sobre los recursos del clúster. Se basa en el API group `rbac.authorization.k8s.io`.
-
-### Objetivos
-- **Definir permisos** de manera centralizada y granular.
-- **Asignar roles** con un conjunto de permisos (verbs) para recursos específicos.
-- **Vincular usuarios o grupos** a esos roles en uno o varios namespaces o a nivel de clúster.
-
-### Principales objetos
-- **Role**  
-  Rol que agrupa reglas de acceso a recursos dentro de un único namespace.
-- **ClusterRole**  
-  Igual que Role, pero aplicable a todo el clúster (todos los namespaces).
-- **RoleBinding**  
-  Asocia un Role con usuarios o grupos en un namespace concreto.
-- **ClusterRoleBinding**  
-  Asocia un ClusterRole con usuarios o grupos a nivel de clúster.
-
-### Verbs (operaciones)
-- `get`, `list`, `watch`  
-- `create`, `update`, `patch`, `delete`  
-- Operaciones sobre recursos (pods, deployments, configmaps, etc.)
-
-### Ámbitos (scopes)
-- **Namespace-Scoped**: Roles y RoleBindings limitados a un namespace.
-- **Cluster-Scoped**: ClusterRoles y ClusterRoleBindings con alcance global.
-
----
-
-> **Tip**: Diseña roles lo más específicos posible y aplica el principio de “menor privilegio” para fortalecer la seguridad del clúster.

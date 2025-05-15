@@ -1,0 +1,17 @@
+# kind-calico.yaml  – clúster Kind “listo para Calico” con puerto 30000 abierto
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+
+# ①  Desactiva el CNI por defecto, así luego instalamos Calico
+networking:
+  disableDefaultCNI: true        # ← imprescindible para NetworkPolicy
+
+nodes:
+# — control‑plane —
+- role: control-plane
+  extraPortMappings:
+    - containerPort: 30000
+      hostPort: 30000
+      protocol: TCP
+# — worker (puedes añadir más bloques iguales) —
+- role: worker

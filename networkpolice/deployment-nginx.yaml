@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-demo         # nombre del Deployment         # opcional; cámbialo o quítalo si no usas este ns
+  labels:
+    app: nginx-demo
+spec:
+  replicas: 1              # ajusta si quieres más pods
+  selector:
+    matchLabels:
+      app: nginx-demo
+  template:
+    metadata:
+      labels:
+        app: nginx-demo
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.25-alpine    # etiqueta estable, multi‑arquitectura
+        ports:
+          - containerPort: 80       # expone el puerto 80 dentro del pod

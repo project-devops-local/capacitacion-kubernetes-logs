@@ -1,0 +1,136 @@
+###############################################################################
+# 1. Namespace (por si no lo tienes aún)
+###############################################################################
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: dev
+---
+###############################################################################
+# 2. Cliente: pod “quieto” con curl instalado
+###############################################################################
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: client-demo
+  namespace: dev
+  labels:
+    app: client-demo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: client-demo
+  template:
+    metadata:
+      labels:
+        app: client-demo
+    spec:
+      containers:
+      - name: curl
+        image: curlimages/curl:8.7.1        # imagen ligera con /bin/sh y curl
+        command: ["sh","-c","sleep infinity"]
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: otro-demo
+  namespace: dev
+  labels:
+    app: otro-demo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: otro-demo
+  template:
+    metadata:
+      labels:
+        app: otro-demo
+    spec:
+      containers:
+      - name: curl
+        image: curlimages/curl:8.7.1        # imagen ligera con /bin/sh y curl
+        command: ["sh","-c","sleep infinity"]
+        # Queda despierto todo el tiempo para que puedas hacer:
+        # kubectl exec -n dev -it <pod> -- curl http://backend-demo:5678
+---
+###############################################################################
+# 3. Backend: eco HTTP siempre vivo
+###############################################################################
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-demo
+  namespace: dev
+  labels:
+    app: backend-demo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend-demo
+  template:
+    metadata:
+      labels:
+        app: backend-demo
+    spec:
+      containers:
+      - name: web
+        image: hashicorp/http-echo:0.2.3
+        args:
+          - "-text=Hola desde el backend"
+        ports:
+          - containerPort: 5678
+---
+###############################################################################
+# 4. Service ClusterIP para el backend
+###############################################################################
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-demo
+  namespace: dev
+spec:
+  selector:
+    app: backend-demo
+  ports:
+    - port: 5678         # servicio interno: http://backend-demo:5678
+      targetPort: 5678
+---
+###############################################################################
+# 5. Política: deny all ingress por defecto en el namespace dev
+###############################################################################
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny-ingress
+  namespace: dev
+spec:
+  podSelector: {}        # match a todos los pods
+  policyTypes:
+    - Ingress            # sólo bloqueamos Ingress
+---
+###############################################################################
+# 6. Política: permitimos que client-demo hable con backend-demo
+###############################################################################
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-backend-from-client
+  namespace: dev
+spec:
+  podSelector:
+    matchLabels:
+      app: backend-demo
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app: client-demo
+      ports:
+        - protocol: TCP
+          port: 5678

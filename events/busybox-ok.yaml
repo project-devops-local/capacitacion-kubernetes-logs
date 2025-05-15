@@ -1,0 +1,53 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name:  events
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: busybox-ok
+  namespace: events
+spec:
+  containers:
+  - name: bb
+    image: busybox
+    command: ["sh", "-c", "echo Hello && sleep 30"]
+  restartPolicy: Never
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: bad-image
+  namespace: events
+spec:
+  containers:
+  - name: bad
+    image: busybox:notreal          # etiqueta inexistente
+    command: ["sh", "-c", "sleep 3600"]
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: crash-loop
+  namespace: events
+spec:
+  containers:
+  - name: app
+    image: busybox
+    command: ["sh", "-c", "exit 1"]
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: oom-pod
+  namespace: events
+spec:
+  containers:
+  - name: memhog
+    image: polinux/stress
+    args: ["--vm", "1", "--vm-bytes", "256M", "--vm-hang", "1"]
+    resources:
+      limits:
+        memory: "64Mi"   # disparará OOM
