@@ -15,8 +15,12 @@ metadata:
   name: pod-reader
   namespace: dev
 rules:
-- apiGroups: ["*"]
-  resources: ["pods","deployments","replicasets"]
+- apiGroups: [""]
+  resources: ["pods"]
+  verbs: ["get", "list", "watch"]
+
+- apiGroups: ["apps"]
+  resources: ["deployments", "replicasets"]
   verbs: ["get", "list", "watch"]
 
 - apiGroups: ["rbac.authorization.k8s.io"]
